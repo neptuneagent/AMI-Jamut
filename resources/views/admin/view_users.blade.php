@@ -111,9 +111,9 @@
 
                                                 <div class="form-group">
                                                     <label><strong>Roles</strong></label><br>
-                                                    <div class="d-flex justify-content-between align-items-center">
+                                                    <div class="d-flex justify-content-between align-items-center container">
                                                         @foreach($roles as $role)
-                                                            <div class="form-check">
+                                                            <div class="form-check d-flex align-items-center">
                                                                 <input type="checkbox" class="form-check-input" name="roles[]" value="{{ $role->name }}" {{ $user->hasRole($role->name) ? 'checked' : '' }}>
                                                                 <label class="form-check-label">{{ $role->name }}</label>
                                                             </div>

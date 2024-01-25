@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 
 class SettingController extends Controller
 {
@@ -39,8 +40,12 @@ class SettingController extends Controller
 
     public function viewUsers()
     {
-        $users = User::all();
-        $roles = Role::all();
+        $users = User::whereDoesntHave('roles', function ($query) {
+            $query->where('name', 'admin');
+        })->get();
+
+        // Fetch non-admin roles
+        $roles = Role::whereNotIn('name', ['admin'])->get();
     
         return view('admin\view_users', compact('users', 'roles'));
     }
@@ -82,7 +87,7 @@ class SettingController extends Controller
 
         // Validate the roles
         $request->validate([
-            'roles' => 'array',
+            'roles' => ['array', Rule::in(['jamut', 'prodi', 'gkm', 'auditor'])],
         ]);
 
         // Sync the roles for the user

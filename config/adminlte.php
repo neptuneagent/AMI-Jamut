@@ -323,6 +323,7 @@ return [
             'text' => 'Manage Users',
             'url'  => '/admin/user',
             'icon' => 'fas fa-fw fa-users',
+            'can'  => 'manage-users'
         ],
         [
             'text' => 'change_password',
