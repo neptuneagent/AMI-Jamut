@@ -49,10 +49,39 @@
                                 </div>
                                 <div class="card-body">
                                     <p class="card-text">{{ $form->description }}</p>
+                                </div>
+                                <div class="card-footer">
                                     <a href="{{ route('forms.show', ['form' => $form->id]) }}" class="btn btn-success"><span class="fas fa-fw fa-wrench"></span>Manage</a>
+                                    <button class="btn btn-danger" data-toggle="modal" data-target="#deleteFormModal{{ $form->id }}">
+                                        <span class="fas fa-fw fa-trash"></span> Delete
+                                    </button>
                                 </div>
                             </div>
                         </div>
+                        
+                        <div class="modal fade" id="deleteFormModal{{ $form->id }}" tabindex="-1" role="dialog" aria-labelledby="deleteFormModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="deleteFormModalLabel">Confirm Deletion</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            Are you sure you want to delete the form {{ $form->title }}?
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                            <form action="{{ route('forms.destroy', ['form' => $form->id]) }}" method="POST">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-danger">Delete</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                     @empty
                         <div class="col-md-12">
                             <p>No forms found.</p>

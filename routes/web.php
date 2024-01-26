@@ -31,23 +31,31 @@ Route::group(['middleware' => ['role:admin']], function () {
     Route::post('/admin/user', [SettingController::class, 'addUser'])->name('admin.add-user');
     Route::delete('/admin/user/{id}', [SettingController::class, 'deleteUser'])->name('admin.delete-user');
     Route::put('/admin/user/roles/{id}', [SettingController::class, 'updateRoles'])->name('admin.update-roles');
+    Route::put('/admin/user/passwordReset/{id}', [SettingController::class, 'resetUserPassword'])->name('admin.user-reset');
 });
 
-Route::get('/forms', [FormController::class, 'index'])->name('admin.forms.index');
-Route::get('/forms/create', [FormController::class, 'create'])->name('forms.create');
-Route::post('/forms', [FormController::class, 'store'])->name('forms.store');
-Route::get('/forms/{form}', [FormController::class, 'show'])->name('forms.show');
-Route::put('/forms/{form}', [FormController::class, 'update'])->name('forms.update');
-Route::delete('/forms/{form}', [FormController::class, 'destroy'])->name('forms.destroy');
+Route::group(['middleware' => ['role:prodi']], function () {
+    Route::get('/forms/available', [FormController::class, 'show_available'])->name('forms.available-forms');
+    Route::get('/forms/{form}/fill', [FormController::class, 'fill'])->name('forms.fill');
+});
 
-Route::post('/forms/{form}/questions', [QuestionController::class, 'store'])->name('questions.store');
-Route::put('/questions/{question}', [QuestionController::class, 'update'])->name('questions.update');
-Route::delete('/questions/{question}', [QuestionController::class, 'destroy'])->name('questions.destroy');
-
-Route::post('/questions/{question}/standards', [StandardController::class, 'store'])->name('standards.store');
-Route::put('/standards/{standard}', [StandardController::class, 'update'])->name('standards.update');
-Route::delete('/standards/{standard}', [StandardController::class, 'destroy'])->name('standards.destroy');
-
-Route::post('/standards/{standard}/criterias', [CriteriaController::class, 'store'])->name('criterias.store');
-Route::put('/criterias/{criteria}', [CriteriaController::class, 'update'])->name('criterias.update');
-Route::delete('/criterias/{criteria}', [CriteriaController::class, 'destroy'])->name('criterias.destroy');
+Route::group(['middleware' => ['role:jamut']], function () {
+    Route::get('/forms', [FormController::class, 'index'])->name('forms.index');
+    Route::get('/forms/create', [FormController::class, 'create'])->name('forms.create');
+    Route::post('/forms', [FormController::class, 'store'])->name('forms.store');
+    Route::get('/forms/{form}', [FormController::class, 'show'])->name('forms.show');
+    Route::put('/forms/{form}', [FormController::class, 'update'])->name('forms.update');
+    Route::delete('/forms/{form}', [FormController::class, 'destroy'])->name('forms.destroy');
+    
+    Route::post('/forms/{form}/questions', [QuestionController::class, 'store'])->name('questions.store');
+    Route::put('/questions/{question}', [QuestionController::class, 'update'])->name('questions.update');
+    Route::delete('/questions/{question}', [QuestionController::class, 'destroy'])->name('questions.destroy');
+    
+    Route::post('/questions/{question}/standards', [StandardController::class, 'store'])->name('standards.store');
+    Route::put('/standards/{standard}', [StandardController::class, 'update'])->name('standards.update');
+    Route::delete('/standards/{standard}', [StandardController::class, 'destroy'])->name('standards.destroy');
+    
+    Route::post('/standards/{standard}/criterias', [CriteriaController::class, 'store'])->name('criterias.store');
+    Route::put('/criterias/{criteria}', [CriteriaController::class, 'update'])->name('criterias.update');
+    Route::delete('/criterias/{criteria}', [CriteriaController::class, 'destroy'])->name('criterias.destroy');
+});

@@ -67,6 +67,23 @@ class SettingController extends Controller
 
         return redirect()->route('admin.view-users')->with('success', 'User added successfully.');
     }
+    
+    public function resetUserPassword($id)
+    {
+        $user = User::findOrFail($id);
+
+        if (!$user) {
+            return redirect()->route('admin.view-users')->with('error', 'User not found.');
+        }
+
+        $user->update([
+            'password' => bcrypt(env('DEFAULT_USER_PASSWORD', 'default_password')),
+        ]);
+
+        $user->save();
+
+        return redirect()->route('admin.view-users')->with('success', 'User password reset successfully.');
+    }
 
     public function deleteUser($id)
     {

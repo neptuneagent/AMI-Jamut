@@ -55,6 +55,17 @@ class FormController extends Controller
     {
         $form->delete();
 
-        return redirect()->route('forms.index')->with('success', 'Form deleted successfully.');
+        return redirect()->back()->with('success', 'Form deleted successfully.');
+    }
+
+    public function show_available()
+    {
+        $forms = Form::all();
+        return view('forms.show-available', compact('forms'));
+    }
+
+    public function fill(Form $form)
+    {
+        return view('forms.fill', compact('form'));
     }
 }

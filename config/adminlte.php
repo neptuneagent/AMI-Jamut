@@ -320,7 +320,7 @@ return [
         ],
         [
             'text' => 'Fill Forms',
-            'url'  => '#',
+            'url'  => '/forms/available',
             'icon' => 'fas fa-fw fa-pencil-alt',
             'can'  => 'fill-forms'
         ],

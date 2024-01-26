@@ -55,6 +55,9 @@
                                     <button class="btn btn-info" data-toggle="modal" data-target="#showUserModal{{ $user->id }}">
                                         <span class="fas fa-fw fa-eye"></span> Show
                                     </button>
+                                    <button class="btn btn-primary" data-toggle="modal" data-target="#resetPasswordModal{{ $user->id }}">
+                                        <span class="fas fa-fw fa-lock"></span> Reset Password
+                                    </button>
                                     <button class="btn btn-danger" data-toggle="modal" data-target="#deleteUserModal{{ $user->id }}">
                                         <span class="fas fa-fw fa-trash"></span> Delete
                                     </button>
@@ -78,6 +81,29 @@
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-danger">Delete</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal fade" id="resetPasswordModal{{ $user->id }}" tabindex="-1" role="dialog" aria-labelledby="resetPasswordModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="resetPasswordModalLabel">Confirm Reset</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            Are you sure you want to reset password of user {{ $user->name }}?
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                            <form action="{{ route('admin.user-reset', ['id' => $user->id]) }}" method="POST">
+                                                @csrf
+                                                @method('PUT')
+                                                <button type="submit" class="btn btn-primary">Reset</button>
                                             </form>
                                         </div>
                                     </div>
