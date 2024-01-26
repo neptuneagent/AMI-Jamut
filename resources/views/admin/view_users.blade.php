@@ -5,7 +5,6 @@
 @section('title', 'Manage Users')
 
 @section('content')
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
     <div class="pt-3">
         <div class="card card-primary">
             <div class="card-header">
@@ -172,7 +171,6 @@
 @stop
 
 @section('js')
-    <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
     <script>
         $(document).ready(function () {
             $('#users-table').DataTable();

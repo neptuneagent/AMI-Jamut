@@ -1,9 +1,12 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\FormController;
+use App\Http\Controllers\QuestionController;
+use App\Http\Controllers\StandardController;
+use App\Http\Controllers\CriteriaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,10 +18,6 @@ use App\Http\Controllers\Admin\SettingController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-
-// Route::get('/', function () {
-//     return view('welcome');
-// });
 
 Auth::routes();
 
@@ -33,3 +32,22 @@ Route::group(['middleware' => ['role:admin']], function () {
     Route::delete('/admin/user/{id}', [SettingController::class, 'deleteUser'])->name('admin.delete-user');
     Route::put('/admin/user/roles/{id}', [SettingController::class, 'updateRoles'])->name('admin.update-roles');
 });
+
+Route::get('/forms', [FormController::class, 'index'])->name('admin.forms.index');
+Route::get('/forms/create', [FormController::class, 'create'])->name('forms.create');
+Route::post('/forms', [FormController::class, 'store'])->name('forms.store');
+Route::get('/forms/{form}', [FormController::class, 'show'])->name('forms.show');
+Route::put('/forms/{form}', [FormController::class, 'update'])->name('forms.update');
+Route::delete('/forms/{form}', [FormController::class, 'destroy'])->name('forms.destroy');
+
+Route::post('/forms/{form}/questions', [QuestionController::class, 'store'])->name('questions.store');
+Route::put('/questions/{question}', [QuestionController::class, 'update'])->name('questions.update');
+Route::delete('/questions/{question}', [QuestionController::class, 'destroy'])->name('questions.destroy');
+
+Route::post('/questions/{question}/standards', [StandardController::class, 'store'])->name('standards.store');
+Route::put('/standards/{standard}', [StandardController::class, 'update'])->name('standards.update');
+Route::delete('/standards/{standard}', [StandardController::class, 'destroy'])->name('standards.destroy');
+
+Route::post('/standards/{standard}/criterias', [CriteriaController::class, 'store'])->name('criterias.store');
+Route::put('/criterias/{criteria}', [CriteriaController::class, 'update'])->name('criterias.update');
+Route::delete('/criterias/{criteria}', [CriteriaController::class, 'destroy'])->name('criterias.destroy');
