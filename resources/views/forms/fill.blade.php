@@ -3,6 +3,14 @@
 @section('title', 'Fill Form | ' . $form->title)
 
 @section('content')
+    <style>
+        input[type=radio]{
+            transform:scale(1.2);
+            cursor: pointer;
+        }
+    </style>
+    <form method="post" action="{{ route('forms.submit', ['form' => $form->id]) }}">
+    @csrf
     <div class="container pt-3">
         <div class="card card-primary">
             <div class="card-header">
@@ -67,41 +75,22 @@
                                                         <div class="mb-3">
                                                             <div class="mx-0 mx-sm-auto">
                                                                 <p>{{ $criteria->description }}</p>
-                                                                <div class="text-center mb-3">
+                                                                <div class="text-center mb-3 d-flex justify-content-around align-items-center">
                                                                     <div class="d-inline mx-3">
                                                                     Sangat Kurang
                                                                     </div>
-
-                                                                    <div class="form-check form-check-inline">
-                                                                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio0"
-                                                                        value="option0" />
-                                                                    <label class="form-check-label" for="inlineRadio0">0</label>
+                                                                    <div class="d-flex align-items-center">
+                                                                        @for ($i=0; $i<5; $i++)
+                                                                            <div class="form-check form-check-inline mx-2" style="flex-direction: column;">
+                                                                                <label class="form-check-label" style="visibility: hidden;">-</label>
+                                                                                <input class="form-check-input mx-0 my-1" type="radio" name="criteria_answers[{{ $criteria->id }}]" id="inlineRadio{{ $i }}" value="{{ $i }}" required/>
+                                                                                <label class="form-check-label" for="inlineRadio{{ $i }}">{{ $i }}</label>
+                                                                            </div>
+                                                                            @if($i<4)
+                                                                                <hr style="width: 50px;"/>
+                                                                            @endif
+                                                                        @endfor
                                                                     </div>
-
-                                                                    <div class="form-check form-check-inline">
-                                                                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1"
-                                                                        value="option1" />
-                                                                    <label class="form-check-label" for="inlineRadio1">1</label>
-                                                                    </div>
-
-                                                                    <div class="form-check form-check-inline">
-                                                                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2"
-                                                                        value="option2" />
-                                                                    <label class="form-check-label" for="inlineRadio2">2</label>
-                                                                    </div>
-
-                                                                    <div class="form-check form-check-inline">
-                                                                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3"
-                                                                        value="option3" />
-                                                                    <label class="form-check-label" for="inlineRadio3">3</label>
-                                                                    </div>
-
-                                                                    <div class="form-check form-check-inline">
-                                                                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio4"
-                                                                        value="option4" />
-                                                                    <label class="form-check-label" for="inlineRadio4">4</label>
-                                                                    </div>
-
                                                                     <div class="d-inline me-4">
                                                                     Sangat Baik
                                                                     </div>
@@ -144,9 +133,12 @@
                     </div>
                 @endif
                 <div class="d-flex justify-content-end">
-                    <a href="{{ route('forms.fill', ['form' => $form->id]) }}" class="btn btn-success"><span class="fas fa-fw fa-paper-plane"></span>Submit</a>
+                        <button type="submit" class="btn btn-success">
+                            <span class="fas fa-fw fa-paper-plane"></span>Submit
+                        </button>
                 </div>
             </div>
         </div>
     </div>
+    </form>
 @endsection

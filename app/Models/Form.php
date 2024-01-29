@@ -24,12 +24,21 @@ class Form extends Model
         return $this->hasMany(Question::class);
     }
     
+    public function responses()
+    {
+        return $this->hasMany(Response::class);
+    }
+
     public function delete()
     {
         $this->questions()->each(function ($question) {
             $question->delete();
         });
 
+        $this->responses()->each(function ($response) {
+            $response->delete();
+        });
+        
         parent::delete();
     }
 }

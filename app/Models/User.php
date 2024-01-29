@@ -43,4 +43,28 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function responses()
+    {
+        return $this->hasMany(Response::class);
+    }
+    
+    public function histories()
+    {
+        return $this->hasMany(ResponseHistory::class);
+    }
+
+    public function delete()
+    {
+        $this->responses()->each(function ($response) {
+            $response->delete();
+        });
+        
+        $this->histories()->each(function ($history) {
+            $history->delete();
+        });
+
+        parent::delete();
+    }
+    
 }

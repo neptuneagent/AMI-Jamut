@@ -7,6 +7,7 @@ use App\Http\Controllers\FormController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\StandardController;
 use App\Http\Controllers\CriteriaController;
+use App\Http\Controllers\ResponseController;
 
 /*
 |--------------------------------------------------------------------------
@@ -37,6 +38,7 @@ Route::group(['middleware' => ['role:admin']], function () {
 Route::group(['middleware' => ['role:prodi']], function () {
     Route::get('/forms/available', [FormController::class, 'show_available'])->name('forms.available-forms');
     Route::get('/forms/{form}/fill', [FormController::class, 'fill'])->name('forms.fill');
+    Route::post('/forms/{form}/submit', [ResponseController::class, 'store'])->name('forms.submit');
 });
 
 Route::group(['middleware' => ['role:jamut']], function () {
@@ -59,3 +61,9 @@ Route::group(['middleware' => ['role:jamut']], function () {
     Route::put('/criterias/{criteria}', [CriteriaController::class, 'update'])->name('criterias.update');
     Route::delete('/criterias/{criteria}', [CriteriaController::class, 'destroy'])->name('criterias.destroy');
 });
+
+Route::group(['middleware' => ['role:prodi|gkm|jamut|auditor']], function () {
+    Route::get('/responses', [ResponseController::class, 'index'])->name('responses.index');
+    Route::get('/responses/{response}', [ResponseController::class, 'show'])->name('responses.show');
+});
+

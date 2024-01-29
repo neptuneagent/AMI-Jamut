@@ -15,4 +15,18 @@ class Criteria extends Model
     {
         return $this->belongsTo(Standard::class);
     }
+
+    public function responseDetails()
+    {
+        return $this->hasMany(ResponseDetail::class);
+    }
+
+    public function delete()
+    {
+        $this->responseDetails()->each(function ($detail) {
+            $detail->delete();
+        });
+
+        parent::delete();
+    }
 }

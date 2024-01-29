@@ -325,14 +325,14 @@ return [
             'can'  => 'fill-forms'
         ],
         [
-            'text' => 'Manage Audited',
-            'url'  => '#',
+            'text' => 'Track Progress',
+            'url'  => '/responses',
             'icon' => 'fas fa-fw fa-eye',
             'can'  => 'view-audited'
         ],
         [
             'text' => 'Complete Forms',
-            'url'  => '#',
+            'url'  => '/responses',
             'icon' => 'fas fa-fw fa-check-square',
             'can'  => 'complete-forms'
         ],
