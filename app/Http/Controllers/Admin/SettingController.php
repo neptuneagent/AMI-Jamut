@@ -47,7 +47,7 @@ class SettingController extends Controller
         // Fetch non-admin roles
         $roles = Role::whereNotIn('name', ['admin'])->get();
     
-        return view('admin\view_users', compact('users', 'roles'));
+        return view('admin.view_users', compact('users', 'roles'));
     }
 
     public function addUser(Request $request)

@@ -62,6 +62,11 @@ Route::group(['middleware' => ['role:jamut']], function () {
     Route::delete('/criterias/{criteria}', [CriteriaController::class, 'destroy'])->name('criterias.destroy');
 });
 
+
+Route::group(['middleware' => ['role:gkm']], function () {
+    Route::post('/responses/{response}/upload-evidence', [ResponseController::class, 'uploadEvidence'])->name('responses.uploadEvidence');
+});
+
 Route::group(['middleware' => ['role:prodi|gkm|jamut|auditor']], function () {
     Route::get('/responses', [ResponseController::class, 'index'])->name('responses.index');
     Route::get('/responses/{response}', [ResponseController::class, 'show'])->name('responses.show');

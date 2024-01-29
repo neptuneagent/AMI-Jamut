@@ -36,6 +36,11 @@ class Response extends Model
     {
         return $this->hasMany(ResponseHistory::class);
     }
+
+    public function evidences()
+    {
+        return $this->hasMany(ResponseEvidence::class);
+    }
     
     public function delete()
     {
@@ -45,6 +50,10 @@ class Response extends Model
         
         $this->histories()->each(function ($history) {
             $history->delete();
+        });
+
+        $this->evidences()->each(function ($evidence) {
+            $evidence->delete();
         });
 
         parent::delete();

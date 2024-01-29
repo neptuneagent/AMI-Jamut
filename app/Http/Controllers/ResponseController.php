@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Response;
 use App\Models\ResponseDetail;
 use App\Models\ResponseHistory;
+use App\Models\ResponseEvidence;
 
 class ResponseController extends Controller
 {
@@ -65,5 +66,33 @@ class ResponseController extends Controller
         ]);
         
         return redirect()->route('home')->with('success', 'Form submitted successfully!');
+    }
+
+    public function uploadEvidence(Request $request, $responseId)
+    {
+        $request->validate([
+            'evidence_name' => 'required|string',
+            'evidence_description' => 'required|string',
+            'evidence_file' => 'required|file|mimes:pdf,doc,docx,zip',
+        ]);
+
+        $response = Response::findOrFail($responseId);
+
+        $file = $request->file('evidence_file');
+        $filePath = $file->store('evidence', 'public');
+
+        $evidence = ResponseEvidence::create([
+            'name' => $request->input('evidence_name'),
+            'description' => $request->input('evidence_description'),
+            'file_path' => $filePath,
+            'response_id' => $response->id,
+        ]);
+
+        $response->histories()->create([
+            'action' => 'uploaded evidence',
+            'user_id' => auth()->user()->id,
+        ]);
+
+        return redirect()->back()->with('success', 'Evidence uploaded successfully!');
     }
 }

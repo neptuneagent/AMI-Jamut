@@ -157,31 +157,21 @@
                 </table>
             </div>
         </div>
-        @if (auth()->user()->hasRole('gkm')) 
+        @if (auth()->user()->hasRole('gkm'))
         <div class="card card-info mt-3">
-        	<div class="card-header">
-        		<h3 class="card-title">Supporting Evidence</h3>
-        	</div>
-        	<div class="card-body">
-        		<!-- Form to upload new evidence -->
-        		<form action="" method="post" enctype="multipart/form-data"> @csrf <div class="mb-3">
-        				<label for="evidenceName" class="form-label">Evidence Name</label>
-        				<input type="text" class="form-control" id="evidenceName" name="evidence_name" required>
-        			</div>
-        			<div class="mb-3">
-        				<label for="evidenceDescription" class="form-label">Evidence Description</label>
-        				<textarea class="form-control" id="evidenceDescription" name="evidence_description" required></textarea>
-        			</div>
-        			<div class="mb-3">
-        				<label for="evidenceFile" class="form-label">Upload File</label>
-        				<input type="file" class="form-control" id="evidenceFile" name="evidence_file" required>
-        			</div>
-        			<button type="submit" class="btn btn-primary">Upload Evidence</button>
-        		</form>
-        		<!-- List existing evidence -->
-        		<ul class="list-group mt-3"> 
-                    @if ($response->evidence)
-                        @forelse ($response->evidence as $evidence) 
+            <div class="card-header">
+                <h3 class="card-title">Supporting Evidence</h3>
+            </div>
+            <div class="card-body">
+                <!-- Button to trigger the modal -->
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#uploadEvidenceModal">
+                    Upload Evidence
+                </button>
+
+                <!-- List existing evidence -->
+                <ul class="list-group mt-3"> 
+                    @if ($response->evidences)
+                        @forelse ($response->evidences as $evidence) 
                             <li class="list-group-item">
                                 <h5>{{ $evidence->name }}</h5>
                                 <p>{{ $evidence->description }}</p>
@@ -194,16 +184,52 @@
                         <li class="list-group-item">No supporting evidence found.</li> 
                     @endif
                 </ul>
-        	</div>
-        </div> 
+            </div>
+        </div>
+        <!-- Modal for uploading evidence -->
+        <div class="modal fade" id="uploadEvidenceModal" tabindex="-1" aria-labelledby="uploadEvidenceModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="uploadEvidenceModalLabel">Upload Evidence</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Form to upload new evidence -->
+                        <form action="{{ route('responses.uploadEvidence', ['response' => $response->id]) }}" method="post" enctype="multipart/form-data">
+                            @csrf
+                            <div class="mb-3">
+                                <label for="evidenceName" class="form-label">Evidence Name</label>
+                                <input type="text" class="form-control" id="evidenceName" name="evidence_name" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="evidenceDescription" class="form-label">Evidence Description</label>
+                                <textarea class="form-control" id="evidenceDescription" name="evidence_description" required></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="evidenceFile" class="form-label">Drag and Drop or Upload File</label>
+                                <input type="file" class="form-control" id="evidenceFile" name="evidence_file" required>
+                            </div>
+                            <!-- <div class="mb-3">
+                                <div class="dropzone" id="evidenceDropzone">
+                                    <div class="dz-message" data-dz-message><span>Drag and drop or click to upload evidence</span></div>
+                                </div>
+                            </div> -->
+                            <button type="submit" class="btn btn-primary">Upload Evidence</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
         @endif
     </div>
 @endsection
 
 
-
 @section('js')
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.2/min/dropzone.min.js"></script>
     <script>
+        Dropzone.autoDiscover = false;
         $(document).ready(function() {
             $('.toggle-card-body').on('click', function() {
                 var target = $($(this).data('target'));
@@ -211,6 +237,27 @@
             });
 
             $('.question-card-body').slideToggle();
+
+             // Initialize Dropzone for evidence upload
+            var evidenceDropzone = new Dropzone("#evidenceDropzone", {
+                url: "{{ route('responses.uploadEvidence', $response->id) }}",
+                paramName: "evidence_file",
+                maxFilesize: 5, // in MB
+                addRemoveLinks: true,
+                acceptedFiles: "application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                dictDefaultMessage: "Drag and drop or click to upload evidence",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function (file, response) {
+                    console.log(response);
+                    window.reload()
+                },
+                error: function (file, response) {
+                    swal(response);
+                    window.reload()
+                }
+            });
         });
     </script>
 @stop
