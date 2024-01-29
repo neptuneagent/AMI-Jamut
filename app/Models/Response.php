@@ -15,6 +15,7 @@ class Response extends Model
         'form_id',
         'user_id',
         'submitted_at',
+        'status',
     ];
 
     public function form()

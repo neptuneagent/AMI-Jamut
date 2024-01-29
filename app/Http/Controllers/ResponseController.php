@@ -88,11 +88,62 @@ class ResponseController extends Controller
             'response_id' => $response->id,
         ]);
 
-        $response->histories()->create([
-            'action' => 'uploaded evidence',
+        return redirect()->back()->with('success', 'Evidence uploaded successfully!');
+    }
+
+    /**
+     * Update the specified evidence in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Response  $response
+     * @param  \App\Models\ResponseEvidence  $evidence
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function updateEvidence(Request $request, ResponseEvidence $evidence)
+    {
+        $request->validate([
+            'evidence_name' => 'required|string|max:255',
+            'evidence_description' => 'required|string',
+        ]);
+
+        $evidence->update([
+            'name' => $request->input('evidence_name'),
+            'description' => $request->input('evidence_description'),
+        ]);
+
+        return redirect()->back()->with('success', 'Evidence updated successfully!');
+    }
+
+    /**
+     * Remove the specified evidence from storage.
+     *
+     * @param  \App\Models\Response  $response
+     * @param  \App\Models\ResponseEvidence  $evidence
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function deleteEvidence(ResponseEvidence $evidence)
+    {
+        $evidence->delete();
+
+        return redirect()->back()->with('success', 'Evidence deleted successfully!');
+    }
+
+    public function markComplete($responseId)
+    {
+        $response = Response::findOrFail($responseId);
+
+        if ($response->status === 'completed') {
+            return redirect()->back()->with('error', 'Response is already marked as complete.');
+        }
+
+        $response->update(['status' => 'completed']);
+
+        ResponseHistory::create([
+            'response_id' => $response->id,
+            'action' => 'marked the form as complete',
             'user_id' => auth()->user()->id,
         ]);
 
-        return redirect()->back()->with('success', 'Evidence uploaded successfully!');
+        return redirect()->route('responses.index');
     }
 }

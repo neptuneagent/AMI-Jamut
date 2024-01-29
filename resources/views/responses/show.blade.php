@@ -163,27 +163,108 @@
                 <h3 class="card-title">Supporting Evidence</h3>
             </div>
             <div class="card-body">
-                <!-- Button to trigger the modal -->
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#uploadEvidenceModal">
-                    Upload Evidence
-                </button>
+                @if(session('success'))
+                    <div class="alert alert-success">
+                        {{ session('success') }}
+                    </div>
+                @endif
 
-                <!-- List existing evidence -->
-                <ul class="list-group mt-3"> 
-                    @if ($response->evidences)
-                        @forelse ($response->evidences as $evidence) 
-                            <li class="list-group-item">
-                                <h5>{{ $evidence->name }}</h5>
-                                <p>{{ $evidence->description }}</p>
-                                <a href="{{ asset('storage/'.$evidence->file_path) }}" target="_blank">View File</a>
-                            </li> 
-                        @empty 
-                            <li class="list-group-item">No supporting evidence found.</li> 
-                        @endforelse 
-                    @else
-                        <li class="list-group-item">No supporting evidence found.</li> 
-                    @endif
-                </ul>
+                @if(session('error'))
+                    <div class="alert alert-danger">
+                        {{ session('error') }}
+                    </div>
+                @endif
+
+                @if($errors->any())
+                    <div class="alert alert-danger">
+                        @foreach($errors->all() as $error)
+                            <div>{{ $error }}</div>
+                        @endforeach
+                    </div>
+                @endif
+                <!-- Button to trigger the modal -->
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#uploadEvidenceModal"><span class="fas fa-fw fa-upload"></span> Upload Evidence</button>
+                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#markCompleteModal"><span class="fas fa-fw fa-check"></span> Mark as Complete</button>
+                @if ($response->evidences)
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th>Uploaded On</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($response->evidences as $evidence)
+                            <tr>
+                                <td>{{ $evidence->name }}</td>
+                                <td>{{ $evidence->description }}</td>
+                                <td>{{ $evidence->created_at }}</td>
+                                <td>
+                                    <a class="btn btn-info" href="{{ asset('storage/'.$evidence->file_path) }}" target="_blank"><span class="fas fa-fw fa-file"></span> View</a>
+                                    <button class="btn btn-warning" data-toggle="modal" data-target="#editEvidenceModal{{ $evidence->id }}"><span class="fas fa-fw fa-edit"></span> Edit</button>
+                                    <button class="btn btn-danger" data-toggle="modal" data-target="#deleteEvidenceModal{{ $evidence->id }}"><span class="fas fa-fw fa-trash"></span> Delete</button>
+                                </td>
+                            </tr>
+
+                            <!-- Modal for editing evidence -->
+                            <div class="modal fade" id="editEvidenceModal{{ $evidence->id }}" tabindex="-1" aria-labelledby="editEvidenceModalLabel{{ $evidence->id }}" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="editEvidenceModalLabel{{ $evidence->id }}">Edit Evidence</h5>
+                                            <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <!-- Form to edit evidence -->
+                                            <form action="{{ route('responses.updateEvidence', ['response' => $response->id, 'evidence' => $evidence->id]) }}" method="post">
+                                                @csrf
+                                                @method('PUT')
+                                                <div class="mb-3">
+                                                    <label for="editEvidenceName{{ $evidence->id }}" class="form-label">Evidence Name</label>
+                                                    <input type="text" class="form-control" id="editEvidenceName{{ $evidence->id }}" name="evidence_name" value="{{ $evidence->name }}" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="editEvidenceDescription{{ $evidence->id }}" class="form-label">Evidence Description</label>
+                                                    <textarea class="form-control" id="editEvidenceDescription{{ $evidence->id }}" name="evidence_description" required>{{ $evidence->description }}</textarea>
+                                                </div>
+                                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Modal for deleting evidence -->
+                            <div class="modal fade" id="deleteEvidenceModal{{ $evidence->id }}" tabindex="-1" aria-labelledby="deleteEvidenceModalLabel{{ $evidence->id }}" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="deleteEvidenceModalLabel{{ $evidence->id }}">Delete Evidence</h5>
+                                            <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>Are you sure you want to delete this evidence?</p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                            <!-- Form to delete evidence -->
+                                            <form action="{{ route('responses.deleteEvidence', ['response' => $response->id, 'evidence' => $evidence->id]) }}" method="post">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-danger">Delete</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </tbody>
+                </table>
+                @else
+                    <div class="col-md-12 text-align-center">No supporting evidence found.</div> 
+                @endif
             </div>
         </div>
         <!-- Modal for uploading evidence -->
@@ -210,12 +291,30 @@
                                 <label for="evidenceFile" class="form-label">Drag and Drop or Upload File</label>
                                 <input type="file" class="form-control" id="evidenceFile" name="evidence_file" required>
                             </div>
-                            <!-- <div class="mb-3">
-                                <div class="dropzone" id="evidenceDropzone">
-                                    <div class="dz-message" data-dz-message><span>Drag and drop or click to upload evidence</span></div>
-                                </div>
-                            </div> -->
                             <button type="submit" class="btn btn-primary">Upload Evidence</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Modal for deleting evidence -->
+        <div class="modal fade" id="markCompleteModal" tabindex="-1" aria-labelledby="markCompleteModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="markCompleteModalLabel">Mark as Completed</h5>
+                        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Are you sure you want to mark this response as completed? This will be passed to next step</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <!-- Form to delete evidence -->
+                        <form action="{{ route('responses.markComplete', ['response' => $response->id] ) }}" method="post">
+                            @csrf
+                            @method('PUT')
+                            <button type="submit" class="btn btn-primary">Continue</button>
                         </form>
                     </div>
                 </div>
@@ -227,9 +326,7 @@
 
 
 @section('js')
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.2/min/dropzone.min.js"></script>
     <script>
-        Dropzone.autoDiscover = false;
         $(document).ready(function() {
             $('.toggle-card-body').on('click', function() {
                 var target = $($(this).data('target'));
@@ -238,26 +335,6 @@
 
             $('.question-card-body').slideToggle();
 
-             // Initialize Dropzone for evidence upload
-            var evidenceDropzone = new Dropzone("#evidenceDropzone", {
-                url: "{{ route('responses.uploadEvidence', $response->id) }}",
-                paramName: "evidence_file",
-                maxFilesize: 5, // in MB
-                addRemoveLinks: true,
-                acceptedFiles: "application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-                dictDefaultMessage: "Drag and drop or click to upload evidence",
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                success: function (file, response) {
-                    console.log(response);
-                    window.reload()
-                },
-                error: function (file, response) {
-                    swal(response);
-                    window.reload()
-                }
-            });
         });
     </script>
 @stop

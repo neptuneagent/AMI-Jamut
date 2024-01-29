@@ -2,7 +2,7 @@
 
 @extends('adminlte::page')
 
-@section('title', 'Manage Forms')
+@section('title', 'Manage Responses')
 
 @section('content')
     <div class="container pt-3">
@@ -47,6 +47,9 @@
                             <tr>
                                 <th>ID</th>
                                 <th>Form</th>
+                                @if( !auth()->user()->hasRole('prodi') )
+                                <th>Submitted By</th>
+                                @endif
                                 <th>Submitted At</th>
                                 <th>Status</th>
                                 <th>Action</th>
@@ -57,6 +60,9 @@
                                 <tr>
                                     <td>{{ $response->id }}</td>
                                     <td>{{ $response->form->title }}</td>
+                                    @if( !auth()->user()->hasRole('prodi') )
+                                    <td>{{ $response->user->name }}</td>
+                                    @endif
                                     <td>{{ $response->submitted_at }}</td>
                                     <td>
                                         <span class="float-end badge {{ getStatusBadgeClass($response->status) }}">{{ $response->status }}</span>

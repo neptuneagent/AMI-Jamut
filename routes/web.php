@@ -65,6 +65,9 @@ Route::group(['middleware' => ['role:jamut']], function () {
 
 Route::group(['middleware' => ['role:gkm']], function () {
     Route::post('/responses/{response}/upload-evidence', [ResponseController::class, 'uploadEvidence'])->name('responses.uploadEvidence');
+    Route::put('/evidences/{evidence}', [ResponseController::class, 'updateEvidence'])->name('responses.updateEvidence');
+    Route::delete('/evidences/{evidence}', [ResponseController::class, 'deleteEvidence'])->name('responses.deleteEvidence');
+    Route::put('/responses/{response}/mark-complete', [ResponseController::class, 'markComplete'])->name('responses.markComplete');
 });
 
 Route::group(['middleware' => ['role:prodi|gkm|jamut|auditor']], function () {
