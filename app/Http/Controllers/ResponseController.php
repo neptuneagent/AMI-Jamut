@@ -239,4 +239,46 @@ class ResponseController extends Controller
         return redirect()->route('responses.index');
     }
 
+    public function edit($responseId)
+    {
+        $response = Response::findOrFail($responseId);
+
+        if ($response->status !== 'audited') {
+            return redirect()->back()->with('error', 'It is against the workflow');
+        }
+
+        return view('responses.resubmit', compact('response'));
+    }
+
+    public function update(Request $request, $responseId)
+    {
+        // Validate the request
+        $request->validate([
+            // Add any validation rules as needed
+        ]);
+
+        $response = Response::findOrFail($responseId);
+
+        if ($response->status !== 'audited') {
+            return redirect()->back()->with('error', 'It is against the workflow');
+        }
+
+        // Save response details
+        foreach ($request->input('criteria_answers') as $criteriaId => $answer) {
+            ResponseDetail::updateOrCreate(
+                ['response_id' => $response->id, 'criteria_id' => $criteriaId],
+                ['answer' => $answer]
+            );
+        }
+
+        $response->update(['status' => 'waiting', 'submitted_at' => now()]);
+
+        ResponseHistory::create([
+            'response_id' => $response->id,
+            'action' => 'resubmitted the form',
+            'user_id' => auth()->user()->id,
+        ]);
+        
+        return redirect()->route('home')->with('success', 'Form resubmitted successfully!');
+    }
 }

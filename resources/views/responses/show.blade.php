@@ -33,10 +33,9 @@
                     </div>
                 </div>
 
-                @if (auth()->user()->id == $response->user->id)
+                @if (auth()->user()->id == $response->user->id && $response->status == 'audited')
                     <button type="button" class="btn btn-success" data-toggle="modal" data-target="#markDoneModal"><span class="fas fa-fw fa-check"></span> Mark as Done</button>
-                    <!-- TODO: functionality to add resubmit audited form-->
-
+                    <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#resubmitModal"><span class="fas fa-fw fa-pen"></span> Resubmit Form</button>
 
                     <!-- Modal for mark completed -->
                     <div class="modal fade" id="markDoneModal" tabindex="-1" aria-labelledby="markDoneModalLabel" aria-hidden="true">
@@ -55,6 +54,29 @@
                                     <form action="{{ route('responses.markDone', ['response' => $response->id] ) }}" method="post">
                                         @csrf
                                         @method('PUT')
+                                        <button type="submit" class="btn btn-primary">Continue</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Modal for mark completed -->
+                    <div class="modal fade" id="resubmitModal" tabindex="-1" aria-labelledby="resubmitModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="resubmitModalLabel">Resubmit Form</h5>
+                                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>Are you sure you want to resubmit the form? the process will be run once again</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                    <!-- Form to delete evidence -->
+                                    <form action="{{ route('responses.edit', ['response' => $response->id] ) }}" method="get">
+                                        @csrf
                                         <button type="submit" class="btn btn-primary">Continue</button>
                                     </form>
                                 </div>
@@ -229,7 +251,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($response->evidences as $evidence)
+                                @forelse ($response->evidences as $evidence)
                                     <tr>
                                         <td>{{ $evidence->name }}</td>
                                         <td>{{ $evidence->description }}</td>
@@ -292,7 +314,9 @@
                                             </div>
                                         </div>
                                     </div>
-                                @endforeach
+                                @empty
+                                    <td colspan="4" style="text-align: center">No supporting evidence found.</td>
+                                @endforelse
                             </tbody>
                         </table>
                         <!-- Modal for uploading evidence -->
@@ -359,7 +383,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($response->evidences as $evidence)
+                                @forelse ($response->evidences as $evidence)
                                     <tr>
                                         <td>{{ $evidence->name }}</td>
                                         <td>{{ $evidence->description }}</td>
@@ -368,7 +392,9 @@
                                             <a class="btn btn-info" href="{{ asset('storage/'.$evidence->file_path) }}" target="_blank"><span class="fas fa-fw fa-file"></span> View</a>
                                         </td>
                                     </tr>
-                                @endforeach
+                                @empty
+                                    <td colspan="4" style="text-align: center">No supporting evidence found.</td>
+                                @endforelse
                             </tbody>
                         </table>
                     @endif
@@ -583,7 +609,7 @@
                                     </div>
                             @empty
                                 <tr>
-                                    <td colspan="3">No findings available.</td>
+                                    <td colspan="4" style="text-align: center">No findings available.</td>
                                 </tr>
                             @endforelse
                         </tbody>

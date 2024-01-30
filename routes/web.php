@@ -47,6 +47,8 @@ Route::group(['middleware' => ['role:prodi']], function () {
     Route::get('/forms/{form}/fill', [FormController::class, 'fill'])->name('forms.fill');
     Route::post('/forms/{form}/submit', [ResponseController::class, 'store'])->name('forms.submit');
     Route::put('/responses/{response}/mark-done', [ResponseController::class, 'markAsDone'])->name('responses.markDone');
+    Route::get('/responses/{response}/resubmit', [ResponseController::class, 'edit'])->name('responses.edit');
+    Route::put('/responses/{response}/resubmit', [ResponseController::class, 'update'])->name('responses.resubmit');
 });
 
 Route::group(['middleware' => ['role:jamut']], function () {
