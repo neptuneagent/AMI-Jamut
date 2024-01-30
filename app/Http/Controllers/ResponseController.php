@@ -7,6 +7,7 @@ use App\Models\Response;
 use App\Models\ResponseDetail;
 use App\Models\ResponseHistory;
 use App\Models\ResponseEvidence;
+use App\Models\ResponseFinding;
 
 class ResponseController extends Controller
 {
@@ -141,6 +142,78 @@ class ResponseController extends Controller
         ResponseHistory::create([
             'response_id' => $response->id,
             'action' => 'marked the form as complete',
+            'user_id' => auth()->user()->id,
+        ]);
+
+        return redirect()->route('responses.index');
+    }
+
+    public function addFinding(Request $request, $responseId)
+    {
+        $request->validate([
+            'finding_description' => 'required|string',
+            'criteria_id' => 'required|exists:criterias,id',
+            'root_cause' => 'required|string',
+            'recommendation' => 'required|string',
+            'category' => 'required|in:observation,discrepancy', // Validate the category field
+        ]);
+
+        ResponseFinding::create([
+            'response_id' => $responseId,
+            'description' => $request->input('finding_description'),
+            'criteria_id' => $request->input('criteria_id'),
+            'root_cause' => $request->input('root_cause'),
+            'recommendation' => $request->input('recommendation'),
+            'category' => $request->input('category'),
+        ]);
+
+        return redirect()->back()->with('success', 'Finding added successfully!');
+    }
+
+    public function updateFinding(Request $request, $findingId)
+    {
+        $request->validate([
+            'finding_description' => 'required|string',
+            'criteria_id' => 'required|exists:criterias,id',
+            'root_cause' => 'required|string',
+            'recommendation' => 'required|string',
+            'category' => 'required|in:observation,discrepancy', // Validate the category field
+        ]);
+
+        $finding = ResponseFinding::findOrFail($findingId);
+
+        $finding->update([
+            'description' => $request->input('finding_description'),
+            'criteria_id' => $request->input('criteria_id'),
+            'root_cause' => $request->input('root_cause'),
+            'recommendation' => $request->input('recommendation'),
+            'category' => $request->input('category'),
+        ]);
+
+        return redirect()->back()->with('success', 'Finding updated successfully!');
+    }
+
+    public function deleteFinding($findingId)
+    {
+        $finding = ResponseFinding::findOrFail($findingId);
+        $finding->delete();
+
+        return redirect()->back()->with('success', 'Finding deleted successfully!');
+    }
+
+    public function markAudited($responseId)
+    {
+        $response = Response::findOrFail($responseId);
+
+        if ($response->status === 'audited') {
+            return redirect()->back()->with('error', 'Response is already marked as audited.');
+        }
+
+        $response->update(['status' => 'audited']);
+
+        ResponseHistory::create([
+            'response_id' => $response->id,
+            'action' => 'marked the form as audited',
             'user_id' => auth()->user()->id,
         ]);
 

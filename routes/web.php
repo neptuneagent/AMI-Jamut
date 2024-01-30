@@ -75,3 +75,9 @@ Route::group(['middleware' => ['role:prodi|gkm|jamut|auditor']], function () {
     Route::get('/responses/{response}', [ResponseController::class, 'show'])->name('responses.show');
 });
 
+Route::group(['middleware' => ['role:auditor']], function () {
+    Route::post('/responses/{response}/add-finding', [ResponseController::class, 'addFinding'])->name('findings.store');
+    Route::put('/findings/{finding}', [ResponseController::class, 'updateFinding'])->name('findings.update');
+    Route::delete('/findings/{finding}', [ResponseController::class, 'deleteFinding'])->name('findings.destroy');
+    Route::put('/responses/{response}/mark-audited', [ResponseController::class, 'markAudited'])->name('responses.markAudited');
+});

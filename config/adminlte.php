@@ -338,7 +338,7 @@ return [
         ],
         [
             'text' => 'Audit Forms',
-            'url'  => '#',
+            'url'  => '/responses',
             'icon' => 'fas fa-fw fa-clipboard-check',
             'can'  => 'audit-forms'
         ],

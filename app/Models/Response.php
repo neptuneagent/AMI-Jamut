@@ -43,6 +43,11 @@ class Response extends Model
         return $this->hasMany(ResponseEvidence::class);
     }
     
+    public function findings()
+    {
+        return $this->hasMany(ResponseFinding::class);
+    }
+    
     public function delete()
     {
         $this->details()->each(function ($detail) {
@@ -55,6 +60,10 @@ class Response extends Model
 
         $this->evidences()->each(function ($evidence) {
             $evidence->delete();
+        });
+
+        $this->findings()->each(function ($finding) {
+            $finding->delete();
         });
 
         parent::delete();

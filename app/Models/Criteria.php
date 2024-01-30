@@ -21,10 +21,19 @@ class Criteria extends Model
         return $this->hasMany(ResponseDetail::class);
     }
 
+    public function findings()
+    {
+        return $this->hasMany(ResponseFinding::class);
+    }
+
     public function delete()
     {
         $this->responseDetails()->each(function ($detail) {
             $detail->delete();
+        });
+
+        $this->findings()->each(function ($finding) {
+            $finding->delete();
         });
 
         parent::delete();
