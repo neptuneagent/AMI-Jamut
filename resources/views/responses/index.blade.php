@@ -13,7 +13,7 @@
                         Your Submissions
                     @elseif( auth()->user()->hasRole('gkm') )
                         To be Completed
-                    @elseif( auth()->user()->hasRole('jamut') )
+                    @elseif( auth()->user()->hasRole('jamut|admin') )
                         All submissions
                     @elseif( auth()->user()->hasRole('auditor') )
                         To be Audited

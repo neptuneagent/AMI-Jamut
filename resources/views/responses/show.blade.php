@@ -32,6 +32,36 @@
                         </div>
                     </div>
                 </div>
+
+                @if (auth()->user()->id == $response->user->id)
+                    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#markDoneModal"><span class="fas fa-fw fa-check"></span> Mark as Done</button>
+                    <!-- TODO: functionality to add resubmit audited form-->
+
+
+                    <!-- Modal for mark completed -->
+                    <div class="modal fade" id="markDoneModal" tabindex="-1" aria-labelledby="markDoneModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="markDoneModalLabel">Mark as Done</h5>
+                                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>Are you sure you want to mark this response as done? This will be the final result of auditing</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                    <!-- Form to delete evidence -->
+                                    <form action="{{ route('responses.markDone', ['response' => $response->id] ) }}" method="post">
+                                        @csrf
+                                        @method('PUT')
+                                        <button type="submit" class="btn btn-primary">Continue</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endif
                 
                 <div class="d-flex align-items-center">
                     <hr style="width: 100%;"/>

@@ -26,7 +26,7 @@ if (!function_exists('getStatusBadgeClass')) {
     {
         $badgeClasses = [
             'waiting' => 'bg-warning',
-            'completed' => 'bg-primary',
+            'completed' => 'bg-secondary',
             'audited' => 'bg-info',
             'done' => 'bg-success',
         ];

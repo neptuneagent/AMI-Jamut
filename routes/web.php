@@ -22,10 +22,17 @@ use App\Http\Controllers\ResponseController;
 
 Auth::routes();
 
-Route::get('/', [HomeController::class, 'index'])->name('index');
-Route::get('/home', [HomeController::class, 'index'])->name('home');
-Route::get('/admin/settings', [SettingController::class, 'index'])->name('admin.settings');
-Route::put('/admin/settings/update-password', [SettingController::class, 'updatePassword'])->name('admin.update-password');
+// Route::get('/', [HomeController::class, 'index'])->name('index');
+// Route::get('/home', [HomeController::class, 'index'])->name('home');
+
+
+
+Route::group(['middleware' => ['auth']], function () {
+    Route::get('/', [ResponseController::class, 'index'])->name('index');
+    Route::get('/home', [ResponseController::class, 'index'])->name('home');
+    Route::get('/admin/settings', [SettingController::class, 'index'])->name('admin.settings');
+    Route::put('/admin/settings/update-password', [SettingController::class, 'updatePassword'])->name('admin.update-password');
+});
 
 Route::group(['middleware' => ['role:admin']], function () {
     Route::get('/admin/user', [SettingController::class, 'viewUsers'])->name('admin.view-users');
@@ -39,6 +46,7 @@ Route::group(['middleware' => ['role:prodi']], function () {
     Route::get('/forms/available', [FormController::class, 'show_available'])->name('forms.available-forms');
     Route::get('/forms/{form}/fill', [FormController::class, 'fill'])->name('forms.fill');
     Route::post('/forms/{form}/submit', [ResponseController::class, 'store'])->name('forms.submit');
+    Route::put('/responses/{response}/mark-done', [ResponseController::class, 'markAsDone'])->name('responses.markDone');
 });
 
 Route::group(['middleware' => ['role:jamut']], function () {

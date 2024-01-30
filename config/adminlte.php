@@ -312,36 +312,36 @@ return [
             'icon' => 'fas fa-fw fa-cogs',
             'can'  => 'manage-forms'
         ],
-        [
-            'text' => 'Manage Results',
-            'url'  => '#',
-            'icon' => 'fas fa-fw fa-poll',
-            'can'  => 'manage-results'
-        ],
+        // [
+        //     'text' => 'Manage Results',
+        //     'url'  => '/responses',
+        //     'icon' => 'fas fa-fw fa-poll',
+        //     'can'  => 'manage-results'
+        // ],
         [
             'text' => 'Fill Forms',
             'url'  => '/forms/available',
             'icon' => 'fas fa-fw fa-pencil-alt',
             'can'  => 'fill-forms'
         ],
-        [
-            'text' => 'Track Progress',
-            'url'  => '/responses',
-            'icon' => 'fas fa-fw fa-eye',
-            'can'  => 'view-audited'
-        ],
-        [
-            'text' => 'Complete Forms',
-            'url'  => '/responses',
-            'icon' => 'fas fa-fw fa-check-square',
-            'can'  => 'complete-forms'
-        ],
-        [
-            'text' => 'Audit Forms',
-            'url'  => '/responses',
-            'icon' => 'fas fa-fw fa-clipboard-check',
-            'can'  => 'audit-forms'
-        ],
+        // [
+        //     'text' => 'Track Progress',
+        //     'url'  => '/responses',
+        //     'icon' => 'fas fa-fw fa-eye',
+        //     'can'  => 'view-audited'
+        // ],
+        // [
+        //     'text' => 'Complete Forms',
+        //     'url'  => '/responses',
+        //     'icon' => 'fas fa-fw fa-check-square',
+        //     'can'  => 'complete-forms'
+        // ],
+        // [
+        //     'text' => 'Audit Forms',
+        //     'url'  => '/responses',
+        //     'icon' => 'fas fa-fw fa-clipboard-check',
+        //     'can'  => 'audit-forms'
+        // ],
         ['header' => 'account_settings'],
         [
             'text' => 'Manage Users',

@@ -21,7 +21,7 @@ class ResponseController extends Controller
             $responses = Response::where('status', 'waiting')->get();
         } elseif ($user->hasRole('auditor')) {
             $responses = Response::where('status', 'completed')->get();
-        } elseif ($user->hasRole('jamut')) {
+        } elseif ($user->hasRole('jamut|admin')) {
             $responses = Response::all();
         } else {
             $responses = collect(); 
@@ -133,8 +133,8 @@ class ResponseController extends Controller
     {
         $response = Response::findOrFail($responseId);
 
-        if ($response->status === 'completed') {
-            return redirect()->back()->with('error', 'Response is already marked as complete.');
+        if ($response->status !== 'waiting') {
+            return redirect()->back()->with('error', 'It is against the workflow');
         }
 
         $response->update(['status' => 'completed']);
@@ -205,8 +205,8 @@ class ResponseController extends Controller
     {
         $response = Response::findOrFail($responseId);
 
-        if ($response->status === 'audited') {
-            return redirect()->back()->with('error', 'Response is already marked as audited.');
+        if ($response->status !== 'completed') {
+            return redirect()->back()->with('error', 'It is against the workflow');
         }
 
         $response->update(['status' => 'audited']);
@@ -219,4 +219,24 @@ class ResponseController extends Controller
 
         return redirect()->route('responses.index');
     }
+
+    public function markAsDone($responseId)
+    {
+        $response = Response::findOrFail($responseId);
+
+        if ($response->status !== 'audited') {
+            return redirect()->back()->with('error', 'It is against the workflow');
+        }
+
+        $response->update(['status' => 'done']);
+
+        ResponseHistory::create([
+            'response_id' => $response->id,
+            'action' => 'marked the form as done',
+            'user_id' => auth()->user()->id,
+        ]);
+
+        return redirect()->route('responses.index');
+    }
+
 }
