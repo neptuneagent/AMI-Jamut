@@ -24,7 +24,7 @@ class ResponseController extends Controller
         } elseif ($user->hasRole('jamut|admin')) {
             $responses = Response::all();
         } else {
-            $responses = collect(); 
+            $responses = collect();
         }
 
         return view('responses.index', compact('responses'));
@@ -53,10 +53,12 @@ class ResponseController extends Controller
 
         // Save response details
         foreach ($request->input('criteria_answers') as $criteriaId => $answer) {
+            $information = $request->input('information')[$criteriaId] ?? null;
             ResponseDetail::create([
                 'response_id' => $response->id,
                 'criteria_id' => $criteriaId,
                 'answer' => $answer,
+                'information' => $information,
             ]);
         }
 
@@ -65,7 +67,7 @@ class ResponseController extends Controller
             'action' => 'submitted the form',
             'user_id' => auth()->user()->id,
         ]);
-        
+
         return redirect()->route('home')->with('success', 'Form submitted successfully!');
     }
 
@@ -265,9 +267,11 @@ class ResponseController extends Controller
 
         // Save response details
         foreach ($request->input('criteria_answers') as $criteriaId => $answer) {
+            $information = $request->input('information')[$criteriaId] ?? null;
             ResponseDetail::updateOrCreate(
                 ['response_id' => $response->id, 'criteria_id' => $criteriaId],
-                ['answer' => $answer]
+                ['answer' => $answer],
+                ['information' => $information]
             );
         }
 
@@ -278,7 +282,7 @@ class ResponseController extends Controller
             'action' => 'resubmitted the form',
             'user_id' => auth()->user()->id,
         ]);
-        
+
         return redirect()->route('home')->with('success', 'Form resubmitted successfully!');
     }
 }

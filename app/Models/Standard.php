@@ -15,16 +15,16 @@ class Standard extends Model
     {
         return $this->belongsTo(Question::class);
     }
-    
+
     public function criterias()
     {
         return $this->hasMany(Criteria::class);
     }
-    
+
     public function delete()
     {
-        $this->standards()->each(function ($standard) {
-            $standard->delete();
+        $this->criterias()->each(function ($criteria) {
+            $criteria->delete();
         });
 
         parent::delete();

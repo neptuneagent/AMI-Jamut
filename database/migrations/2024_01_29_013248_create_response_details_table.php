@@ -15,7 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('response_id')->constrained();
             $table->foreignId('criteria_id')->constrained();
-            $table->integer('answer');
+            $table->string('answer');
+            $table->string('information');
             $table->timestamps();
         });
     }

@@ -1,5 +1,6 @@
 <?php
 
+
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Admin\SettingController;
@@ -58,15 +59,15 @@ Route::group(['middleware' => ['role:jamut']], function () {
     Route::get('/forms/{form}', [FormController::class, 'show'])->name('forms.show');
     Route::put('/forms/{form}', [FormController::class, 'update'])->name('forms.update');
     Route::delete('/forms/{form}', [FormController::class, 'destroy'])->name('forms.destroy');
-    
+
     Route::post('/forms/{form}/questions', [QuestionController::class, 'store'])->name('questions.store');
     Route::put('/questions/{question}', [QuestionController::class, 'update'])->name('questions.update');
     Route::delete('/questions/{question}', [QuestionController::class, 'destroy'])->name('questions.destroy');
-    
+
     Route::post('/questions/{question}/standards', [StandardController::class, 'store'])->name('standards.store');
     Route::put('/standards/{standard}', [StandardController::class, 'update'])->name('standards.update');
     Route::delete('/standards/{standard}', [StandardController::class, 'destroy'])->name('standards.destroy');
-    
+
     Route::post('/standards/{standard}/criterias', [CriteriaController::class, 'store'])->name('criterias.store');
     Route::put('/criterias/{criteria}', [CriteriaController::class, 'update'])->name('criterias.update');
     Route::delete('/criterias/{criteria}', [CriteriaController::class, 'destroy'])->name('criterias.destroy');

@@ -15,7 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('standard_id')->constrained();
             $table->string('description');
-            $table->integer('weight')->default(1);
+            $table->string('satuan');
+            $table->string('target');
             $table->timestamps();
         });
     }

@@ -84,7 +84,7 @@
                         </div>
                     </div>
                 @endif
-                
+
                 <div class="d-flex align-items-center">
                     <hr style="width: 100%;"/>
                     <h4 class="my-0 mx-2">Questions</h4>
@@ -125,16 +125,43 @@
                                                         <table class="table">
                                                             <thead>
                                                                 <tr>
-                                                                    <th width="70%">Description</th>
+                                                                    <th width="50%">Description</th>
+                                                                    <th>Target</th>
                                                                     <th>Score</th>
+                                                                    <th>Status</th>
+                                                                    <th width="20%">Information</th>
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
                                                                 @forelse ($standard->criterias as $criteria)
                                                                     <tr>
                                                                         <td>{{ $criteria->description }}</td>
+                                                                        <td>{{ ($criteria->unit=="percentage") ? ($criteria->target . "%") : $criteria->target }}</td>
                                                                         <td>
-                                                                            {{ $criteria->responseDetails()->where('response_id', $response->id)->first()->answer }}
+                                                                            {{ $criteria->responseDetails()->where('response_id', $response->id)->first()->answer . (($criteria->unit=="percentage") ? "%" : "") }}
+                                                                        </td>
+                                                                        <td>
+                                                                            <?php
+                                                                                $score = $criteria->responseDetails()->where('response_id', $response->id)->first()->answer;
+                                                                                if ($criteria->unit=="percentage") {
+                                                                                    if ($score == "0") {
+                                                                                        echo "<span class='float-end badge bg-error'>Menyimpang</span>";
+                                                                                    } else if (intval($score) < intval($criteria->target) ) {
+                                                                                        echo "<span class='float-end badge bg-warning'>Tidak Memenuhi</span>";
+                                                                                    } else {
+                                                                                        echo "<span class='float-end badge bg-success'>Memenuhi</span>";
+                                                                                    }
+                                                                                } else {
+                                                                                    if ($score != $criteria->target ) {
+                                                                                        echo "<span class='float-end badge bg-warning'>Tidak Memenuhi</span>";
+                                                                                    } else {
+                                                                                        echo "<span class='float-end badge bg-success'>Memenuhi</span>";
+                                                                                    }
+                                                                                }
+                                                                            ?>
+                                                                        </td>
+                                                                        <td>
+                                                                            {{ $criteria->responseDetails()->where('response_id', $response->id)->first()->information }}
                                                                         </td>
                                                                     </tr>
                                                                 @empty
@@ -399,7 +426,7 @@
                         </table>
                     @endif
                 @else
-                    <div class="col-md-12" style="text-align: center;">No supporting evidence found.</div> 
+                    <div class="col-md-12" style="text-align: center;">No supporting evidence found.</div>
                 @endif
             </div>
         </div>
@@ -428,7 +455,7 @@
                             @endforeach
                         </div>
                     @endif
-                    
+
                     <button type="button" class="btn btn-warning mb-2" data-toggle="modal" data-target="#addFindingModal"><span class="fas fa-fw fa-plus"></span> Add Finding</button>
                     <button type="button" class="btn btn-success mb-2 mx-1" data-toggle="modal" data-target="#markAuditedModal"><span class="fas fa-fw fa-check"></span> Mark as Audited</button>
 
@@ -525,7 +552,7 @@
                                     <td>{{ $finding->category }}</td>
                                     <td>
                                         <button class="btn btn-info m-1" data-toggle="modal" data-target="#viewFindingModal{{ $finding->id }}"><span class="fas fa-fw fa-eye"></span> View</button>
-                                        @if( auth()->user()->hasRole('auditor') ) 
+                                        @if( auth()->user()->hasRole('auditor') )
                                             <button class="btn btn-danger m-1"data-toggle="modal" data-target="#deleteFindingModal{{ $finding->id }}"><span class="fas fa-fw fa-trash"></span> Delete</button>
                                         @endif
                                     </td>
@@ -574,7 +601,7 @@
                                                     </select>
                                                 </div>
                                                 <div class="d-flex justify-content-end">
-                                                    @if( auth()->user()->hasRole('auditor') ) 
+                                                    @if( auth()->user()->hasRole('auditor') )
                                                        <button type="submit" class="btn btn-primary mx-3">Update</button>
                                                     @endif
                                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>

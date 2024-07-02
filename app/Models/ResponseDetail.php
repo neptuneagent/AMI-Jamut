@@ -15,6 +15,7 @@ class ResponseDetail extends Model
         'response_id',
         'criteria_id',
         'answer',
+        'information'
     ];
 
     public function response()
@@ -24,6 +25,6 @@ class ResponseDetail extends Model
 
     public function criteria()
     {
-        return $this->belongsTo(Criteria::class);     
+        return $this->belongsTo(Criteria::class);
     }
 }

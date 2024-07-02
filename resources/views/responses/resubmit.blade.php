@@ -46,7 +46,7 @@
                     <h4 class="my-0 mx-2">Questions</h4>
                     <hr style="width: 100%;"/>
                 </div>
-            
+
                 @if ($response->form->questions)
                     @forelse ($response->form->questions as $question)
                         <div class="card card-primary">
@@ -75,26 +75,27 @@
                                                     @forelse ($standard->criterias as $criteria)
                                                         <div class="mb-3">
                                                             <div class="mx-0 mx-sm-auto">
-                                                                <p>{{ $criteria->description }}</p>
-                                                                <div class="text-center mb-3 d-flex justify-content-around align-items-center">
-                                                                    <div class="d-inline mx-3">
-                                                                    Sangat Kurang
-                                                                    </div>
-                                                                    <div class="d-flex align-items-center">
-                                                                        @for ($i=0; $i<5; $i++)
-                                                                            <div class="form-check form-check-inline mx-2" style="flex-direction: column;">
-                                                                                <label class="form-check-label" style="visibility: hidden;">-</label>
-                                                                                <input class="form-check-input mx-0 my-1" type="radio" name="criteria_answers[{{ $criteria->id }}]" id="inlineRadio{{ $i }}" value="{{ $i }}" required @if ( $criteria->responseDetails()->where('response_id', $response->id)->first()->answer == $i ) checked @endif />
-                                                                                <label class="form-check-label" for="inlineRadio{{ $i }}">{{ $i }}</label>
-                                                                            </div>
-                                                                            @if($i<4)
-                                                                                <hr style="width: 50px;"/>
-                                                                            @endif
-                                                                        @endfor
-                                                                    </div>
-                                                                    <div class="d-inline me-4">
-                                                                    Sangat Baik
-                                                                    </div>
+                                                                <p>
+                                                                    {{ $criteria->description }}
+                                                                    <span class="float-end badge bg-info">Unit: {{ $criteria->satuan }}</span>
+                                                                    <span class="float-end badge bg-info">Target:
+                                                                        {{ ($criteria->satuan == "percentage") ? ($criteria->target . "%") : $criteria->target }}</span>
+                                                                </p>
+                                                                <div
+                                                                    class="text-center mb-3 d-flex justify-content-around align-items-center">
+                                                                    @if ($criteria->satuan == "percentage")
+                                                                        <input type="number" name="criteria_answers[{{ $criteria->id }}]" class="form-control mx-2"
+                                                                            min="1" max="100" step="1" value="{{ $criteria->responseDetails()->where('response_id', $response->id)->first()->answer }}" required />
+                                                                    @elseif ($criteria->satuan == "availability")
+                                                                        <select name="criteria_answers[{{ $criteria->id }}]" class="form-control mx-2" required>
+                                                                            <option value="available" {{ ($criteria->responseDetails()->where('response_id', $response->id)->first()->answer == "available")?"selected":"" }}>Available</option>
+                                                                            <option value="unavailable" {{ ($criteria->responseDetails()->where('response_id', $response->id)->first()->answer == "unavailable")?"selected":"" }}>Unavailable</option>
+                                                                        </select>
+                                                                    @endif
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label for="additional_info_{{ $criteria->id }}">Additional Information</label>
+                                                                    <textarea name="information[{{ $criteria->id }}]" id="additional_info_{{ $criteria->id }}" class="form-control" rows="3">{{ $criteria->responseDetails()->where('response_id', $response->id)->first()->information }}</textarea>
                                                                 </div>
                                                                 <?php $finding = $criteria->findings()->where('response_id', $response->id)->first(); ?>
                                                                 @if( $finding )

@@ -12,22 +12,25 @@ class CriteriaController extends Controller
     {
         $request->validate([
             'description' => 'required',
-            'weight' => 'integer',
+            'satuan' => 'required',
+            'target' => 'required',
         ]);
 
         $criterias = $standard->criterias()->create([
             'description' => $request->description,
-            'weight' => $request->weight,
+            'satuan' => $request->satuan,
+            'target' => $request->target,
         ]);
 
         return back()->with('success', 'Criteria added successfully.');
     }
-    
+
     public function update(Request $request, Criteria $Criteria)
     {
         $request->validate([
             'description' => 'required',
-            'weight' => 'integer',
+            'satuan' => 'required',
+            'target' => 'required',
         ]);
 
         $Criteria->update($request->all());
