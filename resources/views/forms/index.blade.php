@@ -51,14 +51,21 @@
                                     <p class="card-text">{{ $form->description }}</p>
                                 </div>
                                 <div class="card-footer">
-                                    <a href="{{ route('forms.show', ['form' => $form->id]) }}" class="btn btn-success"><span class="fas fa-fw fa-wrench"></span>Manage</a>
+                                    @if ($form->fillable)
+                                        <a href="{{ route('forms.show', ['form' => $form->id]) }}" class="btn btn-success"><span class="fas fa-fw fa-wrench"></span>Manage</a>
+                                    @else
+                                        <form style="display: inline" action="{{ route('forms.setfillable', ['form' => $form->id]) }}" method="POST">
+                                            @csrf
+                                            <button type="submit" class="btn btn-primary"><span class="fas fa-fw fa-upload"></span>Launch</button>
+                                        </form>
+                                    @endif
                                     <button class="btn btn-danger" data-toggle="modal" data-target="#deleteFormModal{{ $form->id }}">
                                         <span class="fas fa-fw fa-trash"></span> Delete
                                     </button>
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="modal fade" id="deleteFormModal{{ $form->id }}" tabindex="-1" role="dialog" aria-labelledby="deleteFormModalLabel" aria-hidden="true">
                                 <div class="modal-dialog modal-dialog-centered" role="document">
                                     <div class="modal-content">

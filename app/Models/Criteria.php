@@ -26,6 +26,16 @@ class Criteria extends Model
         return $this->hasMany(ResponseFinding::class);
     }
 
+    public function evidences()
+    {
+        return $this->hasMany(ResponseEvidence::class);
+    }
+
+    public function prodiresponses()
+    {
+        return $this->hasMany(ResponseProdi::class);
+    }
+
     public function delete()
     {
         $this->responseDetails()->each(function ($detail) {
@@ -36,6 +46,10 @@ class Criteria extends Model
             $finding->delete();
         });
 
+        $this->evidences()->each(function ($evidence) {
+            $evidence->delete();
+        });
+        
         parent::delete();
     }
 }

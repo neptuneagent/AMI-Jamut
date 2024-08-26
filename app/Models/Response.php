@@ -42,18 +42,19 @@ class Response extends Model
     {
         return $this->hasMany(ResponseEvidence::class);
     }
-    
+
     public function findings()
     {
         return $this->hasMany(ResponseFinding::class);
     }
-    
+
+
     public function delete()
     {
         $this->details()->each(function ($detail) {
             $detail->delete();
         });
-        
+
         $this->histories()->each(function ($history) {
             $history->delete();
         });

@@ -17,13 +17,13 @@ class RolesTableSeeder extends Seeder
         Role::create(['name' => 'auditor']);
 
         $admin = User::create([
-            'name' => 'admin',
-            'email' => 'admin@bssn.go.id',
+            'name' => 'adminjamut',
+            'email' => 'adminjamut@bssn.go.id',
             'password' => bcrypt(env('DEFAULT_USER_PASSWORD', 'default_password')),
         ]);
 
         // Assign admin role to the default admin user
-        $adminRole = Role::where('name', 'admin')->first();
+        $adminRole = Role::where('name', 'adminjamut')->first();
         $admin->assignRole($adminRole);
     }
 }

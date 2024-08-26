@@ -17,13 +17,14 @@ class Form extends Model
     protected $fillable = [
         'title',
         'description',
+        'fillable',
     ];
 
     public function questions()
     {
         return $this->hasMany(Question::class);
     }
-    
+
     public function responses()
     {
         return $this->hasMany(Response::class);
@@ -38,7 +39,7 @@ class Form extends Model
         $this->responses()->each(function ($response) {
             $response->delete();
         });
-        
+
         parent::delete();
     }
 }

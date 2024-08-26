@@ -94,7 +94,7 @@
                                                                         @endif
                                                                     </div>
                                                                     <div class="form-group">
-                                                                        <label for="additional_info_{{ $criteria->id }}">Additional Information</label>
+                                                                        <label for="additional_info_{{ $criteria->id }}">Supporting Data Description</label>
                                                                         <textarea name="information[{{ $criteria->id }}]" id="additional_info_{{ $criteria->id }}" class="form-control" rows="3"></textarea>
                                                                     </div>
                                                                 </div>

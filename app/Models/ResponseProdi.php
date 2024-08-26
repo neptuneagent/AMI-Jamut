@@ -5,23 +5,21 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ResponseFinding extends Model
+class ResponseProdi extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'response_id',
-        'description',
-        'criteria_id',
-        'root_cause',
-        'consequence',
-        'recommendation',
-        'category',
+        'response_finding_id',
+        'comment',
+        'corrective_action_plan',
+        'corrective_action_schedule',
+        'preventive_action_plan',
+        'preventive_action_schedule',
+        'corrective_action_responsible',
+        'preventive_action_responsible',
     ];
 
-    /**
-     * Get the response that owns the finding.
-     */
     public function response()
     {
         return $this->belongsTo(Response::class);
@@ -34,10 +32,4 @@ class ResponseFinding extends Model
     {
         return $this->belongsTo(Criteria::class);
     }
-
-    public function prodiresponses()
-    {
-        return $this->hasMany(ResponseProdi::class);
-    }
-
 }

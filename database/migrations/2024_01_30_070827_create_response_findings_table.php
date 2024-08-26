@@ -19,6 +19,7 @@ return new class extends Migration
             $table->unsignedBigInteger('criteria_id');
             $table->foreign('criteria_id')->references('id')->on('criterias')->onDelete('cascade');
             $table->text('root_cause');
+            $table->text('consequence');
             $table->text('recommendation');
             $table->string('category')->nullable(); // Added category field
             $table->timestamps();

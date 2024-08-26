@@ -50,6 +50,10 @@ Route::group(['middleware' => ['role:prodi']], function () {
     Route::put('/responses/{response}/mark-done', [ResponseController::class, 'markAsDone'])->name('responses.markDone');
     Route::get('/responses/{response}/resubmit', [ResponseController::class, 'edit'])->name('responses.edit');
     Route::put('/responses/{response}/resubmit', [ResponseController::class, 'update'])->name('responses.resubmit');
+    Route::post('/responses/{response}/add-response-prodi', [ResponseController::class, 'addResponseProdi'])->name('response_prodi.store');
+    Route::put('/response_prodi/{responseProdi}', [ResponseController::class, 'updateResponseProdi'])->name('response_prodi.update');
+    Route::delete('/response_prodi/{responseProdi}', [ResponseController::class, 'deleteResponseProdi'])->name('response_prodi.destroy');
+    Route::put('/responses/{response}/mark-response-completed', [ResponseController::class, 'markResponseCompleted'])->name('responses.markResponseCompleted');
 });
 
 Route::group(['middleware' => ['role:jamut']], function () {
@@ -59,6 +63,7 @@ Route::group(['middleware' => ['role:jamut']], function () {
     Route::get('/forms/{form}', [FormController::class, 'show'])->name('forms.show');
     Route::put('/forms/{form}', [FormController::class, 'update'])->name('forms.update');
     Route::delete('/forms/{form}', [FormController::class, 'destroy'])->name('forms.destroy');
+    Route::post('/forms/{form}/setfillable', [FormController::class, 'setFillable'])->name('forms.setfillable');
 
     Route::post('/forms/{form}/questions', [QuestionController::class, 'store'])->name('questions.store');
     Route::put('/questions/{question}', [QuestionController::class, 'update'])->name('questions.update');
@@ -73,13 +78,21 @@ Route::group(['middleware' => ['role:jamut']], function () {
     Route::delete('/criterias/{criteria}', [CriteriaController::class, 'destroy'])->name('criterias.destroy');
 });
 
-
 Route::group(['middleware' => ['role:gkm']], function () {
     Route::post('/responses/{response}/upload-evidence', [ResponseController::class, 'uploadEvidence'])->name('responses.uploadEvidence');
     Route::put('/evidences/{evidence}', [ResponseController::class, 'updateEvidence'])->name('responses.updateEvidence');
     Route::delete('/evidences/{evidence}', [ResponseController::class, 'deleteEvidence'])->name('responses.deleteEvidence');
     Route::put('/responses/{response}/mark-complete', [ResponseController::class, 'markComplete'])->name('responses.markComplete');
 });
+
+/**
+Route::group(['middleware' => ['role:gkm']], function () {
+    Route::post('/responses/{response}/upload-evidence', [ResponseController::class, 'uploadEvidence'])->name('responses.uploadEvidence');
+    Route::put('/evidences/{evidence}', [ResponseController::class, 'updateEvidence'])->name('responses.updateEvidence');
+    Route::delete('/evidences/{evidence}', [ResponseController::class, 'deleteEvidence'])->name('responses.deleteEvidence');
+    Route::put('/responses/{response}/mark-complete', [ResponseController::class, 'markComplete'])->name('responses.markComplete');
+});
+ */
 
 Route::group(['middleware' => ['role:prodi|gkm|jamut|auditor']], function () {
     Route::get('/responses', [ResponseController::class, 'index'])->name('responses.index');

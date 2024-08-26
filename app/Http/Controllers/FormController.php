@@ -35,7 +35,7 @@ class FormController extends Controller
         // You can show the details of the form here
         return view('forms.show', compact('form'));
     }
-    
+
     public function update(Request $request, Form $form)
     {
         $request->validate([
@@ -58,9 +58,18 @@ class FormController extends Controller
         return redirect()->back()->with('success', 'Form deleted successfully.');
     }
 
+    public function setFillable(Form $form)
+    {
+        $form->update([
+            'fillable' => true
+        ]);
+
+        return redirect()->back()->with('success', 'Form is now fillable.');
+    }
+
     public function show_available()
     {
-        $forms = Form::all();
+        $forms = Form::all()->where('fillable', '=', true);
         return view('forms.show-available', compact('forms'));
     }
 

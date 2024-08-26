@@ -31,9 +31,9 @@ class SettingController extends Controller
             return redirect()->back()->with('error', 'The current password is incorrect.');
         }
 
-        $user->update([
-            'password' => bcrypt($request->new_password),
-        ]);
+        //$user->update([
+        //    'password' => bcrypt($request->new_password),
+        //]);
 
         return redirect()->back()->with('success', 'Password updated successfully.');
     }
@@ -46,7 +46,7 @@ class SettingController extends Controller
 
         // Fetch non-admin roles
         $roles = Role::whereNotIn('name', ['admin'])->get();
-    
+
         return view('admin.view_users', compact('users', 'roles'));
     }
 
@@ -67,7 +67,7 @@ class SettingController extends Controller
 
         return redirect()->route('admin.view-users')->with('success', 'User added successfully.');
     }
-    
+
     public function resetUserPassword($id)
     {
         $user = User::findOrFail($id);

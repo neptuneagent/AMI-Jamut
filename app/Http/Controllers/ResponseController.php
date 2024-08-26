@@ -8,6 +8,8 @@ use App\Models\ResponseDetail;
 use App\Models\ResponseHistory;
 use App\Models\ResponseEvidence;
 use App\Models\ResponseFinding;
+use App\Models\Criteria;
+use App\Models\ResponseProdi;
 
 class ResponseController extends Controller
 {
@@ -33,7 +35,6 @@ class ResponseController extends Controller
     public function show($responseId)
     {
         $response = Response::findOrFail($responseId);
-
         return view('responses.show', compact('response'));
     }
 
@@ -77,6 +78,7 @@ class ResponseController extends Controller
             'evidence_name' => 'required|string',
             'evidence_description' => 'required|string',
             'evidence_file' => 'required|file|mimes:pdf,doc,docx,zip',
+            'criteria_id' => 'required|string',
         ]);
 
         $response = Response::findOrFail($responseId);
@@ -89,6 +91,7 @@ class ResponseController extends Controller
             'description' => $request->input('evidence_description'),
             'file_path' => $filePath,
             'response_id' => $response->id,
+            'criteria_id' => $request->input('criteria_id'),
         ]);
 
         return redirect()->back()->with('success', 'Evidence uploaded successfully!');
@@ -156,6 +159,7 @@ class ResponseController extends Controller
             'finding_description' => 'required|string',
             'criteria_id' => 'required|exists:criterias,id',
             'root_cause' => 'required|string',
+            'consequence'=> 'required|string',
             'recommendation' => 'required|string',
             'category' => 'required|in:observation,discrepancy', // Validate the category field
         ]);
@@ -165,6 +169,7 @@ class ResponseController extends Controller
             'description' => $request->input('finding_description'),
             'criteria_id' => $request->input('criteria_id'),
             'root_cause' => $request->input('root_cause'),
+            'consequence'=> $request->input('consequence'),
             'recommendation' => $request->input('recommendation'),
             'category' => $request->input('category'),
         ]);
@@ -178,6 +183,7 @@ class ResponseController extends Controller
             'finding_description' => 'required|string',
             'criteria_id' => 'required|exists:criterias,id',
             'root_cause' => 'required|string',
+            'consequence'=> 'required|string',
             'recommendation' => 'required|string',
             'category' => 'required|in:observation,discrepancy', // Validate the category field
         ]);
@@ -188,6 +194,7 @@ class ResponseController extends Controller
             'description' => $request->input('finding_description'),
             'criteria_id' => $request->input('criteria_id'),
             'root_cause' => $request->input('root_cause'),
+            'consequence'=> $request->input('consequence'),
             'recommendation' => $request->input('recommendation'),
             'category' => $request->input('category'),
         ]);
@@ -285,4 +292,70 @@ class ResponseController extends Controller
 
         return redirect()->route('home')->with('success', 'Form resubmitted successfully!');
     }
+
+    public function addResponseProdi(Request $request, $responseId)
+    {
+        $request->validate([
+            'comment' => 'required|string',
+            'response_finding_id' => 'required|exists:response_findings,id',
+            'corrective_action_plan' => 'required|string',
+            'corrective_action_schedule' => 'required|date',
+            'preventive_action_plan' => 'required|string',
+            'preventive_action_schedule' => 'required|date',
+            'corrective_action_responsible' => 'required|string',
+            'preventive_action_responsible' => 'required|string',
+        ]);
+
+        ResponseProdi::create([
+            'comment' => $request->input('comment'),
+            'response_finding_id' => $request->input('response_finding_id'),
+            'corrective_action_plan' => $request->input('corrective_action_plan'),
+            'corrective_action_schedule' => $request->input('corrective_action_schedule'),
+            'preventive_action_plan' => $request->input('preventive_action_plan'),
+            'preventive_action_schedule' => $request->input('preventive_action_schedule'),
+            'corrective_action_responsible' => $request->input('corrective_action_responsible'),
+            'preventive_action_responsible' => $request->input('preventive_action_responsible'),
+        ]);
+
+        return redirect()->back()->with('success', 'Response Prodi added successfully!');
+    }
+
+    public function updateResponseProdi(Request $request, $responseProdiId)
+    {
+        $request->validate([
+            'comment' => 'required|string',
+            'response_finding_id' => 'required|exists:response_finding,id',
+            'corrective_action_plan' => 'required|string',
+            'corrective_action_schedule' => 'required|date',
+            'preventive_action_plan' => 'required|string',
+            'preventive_action_schedule' => 'required|date',
+            'corrective_action_responsible' => 'required|string',
+            'preventive_action_responsible' => 'required|string',
+        ]);
+
+        $responseProdi = ResponseProdi::findOrFail($responseProdiId);
+
+        $responseProdi->update([
+            'comment' => $request->input('comment'),
+            'response_finding_id' => $request->input('response_finding_id'),
+            'corrective_action_plan' => $request->input('corrective_action_plan'),
+            'corrective_action_schedule' => $request->input('corrective_action_schedule'),
+            'preventive_action_plan' => $request->input('preventive_action_plan'),
+            'preventive_action_schedule' => $request->input('preventive_action_schedule'),
+            'corrective_action_responsible' => $request->input('corrective_action_responsible'),
+            'preventive_action_responsible' => $request->input('preventive_action_responsible'),
+        ]);
+
+        return redirect()->back()->with('success', 'Response Prodi updated successfully!');
+    }
+
+    public function deleteResponseProdi($responseProdiId)
+    {
+        $responseProdi = ResponseProdi::findOrFail($responseProdiId);
+        $responseProdi->delete();
+
+        return redirect()->back()->with('success', 'Response Prodi deleted successfully!');
+    }
+
+
 }
